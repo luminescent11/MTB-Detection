@@ -1,7 +1,7 @@
 # MTB detection in sputum smears with a camera shift test 
 **Track:** Health
 
-**Team:** Rafa deGoma, Ethan Hao
+**Team:** Rafa deGoma
 ## The problem
 Who has this problem, and why does it matter? (2-3 sentences)
 ## What we built
