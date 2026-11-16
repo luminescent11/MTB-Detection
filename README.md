@@ -46,7 +46,7 @@ A and B differ in training size, not just camera. Small test sets: 63–67 image
 Make this ready for use in the form of a mobile app or collect data from new cameras, regions, and populations.
 
 ## Setup
-**A notebook copy with all outputs loaded can be found [here](https://github.com/luminescent11/MTB-Detection/blob/main/MTB_Detection.ipynb)**. Make a folder in your Google Drive named "MTB Detection", download the ZIP file of the data from the [dataset website](https://data.mendeley.com/datasets/34gymtj5yc/9), and drag the ZIP into the Drive folder. Then add the two YAML files in this repo to that Drive folder. Run the notebook sequentially (MTB_Detection.ipynb), setting RUN_TRAINING and RUN_PREDICTIONS to True.
+**A notebook copy with all outputs loaded can be found [here](https://github.com/luminescent11/MTB-Detection/blob/main/MTB_Detection.ipynb)**. Make a folder in your Google Drive named "MTB Detection", download the ZIP file of the data from the [dataset website](https://data.mendeley.com/datasets/34gymtj5yc/9), and drag the ZIP into the Drive folder. Then add the two YAML files in this repo to that Drive folder. Set RUN_TRAINING and RUN_PREDICTIONS to True. Run the notebook sequentially (MTB_Detection.ipynb) on a GPU runtime.
 
 ## Disclaimer
 This project is a prototype and is not medical advice.
