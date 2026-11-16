@@ -5,7 +5,7 @@
 ## The problem
 TB sickened 10.7M people, mostly in low-middle-income countries, where many clinics do not have the resources to conduct recommended, faster molecular TB diagnostics, instead using Ziehl-Neelsen (ZN) staining and counting TB bacteria (MTB) from microscope images by eye, which is error-prone. While this can be assisted by CV, camera setup shifts in AI are known to hurt performance: F1 score on mitosis detection dropped from 0.683 to 0.325 when the testing dataset used different scanner than the one trained on (Aubreville et al. 2021). I hypothesize that a similar pattern will apply to MTB detection in sputum smear images.
 ## What we built
-A microscope ZN smear image is fed into the fine-tuned model for inference, and the model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count, used by clinicians to expedite diagnosis. **A notebook copy with all outputs loaded can be found [here](https://github.com/luminescent11/MTB-Detection/blob/main/MTB_Detection.ipynb)**
+A microscope ZN smear image is fed into the fine-tuned model for inference, and the model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count, used by lab technicians at underresourced clinics while reading ZN smears to expedite diagnosis. **A notebook copy with all outputs loaded can be found [here](https://github.com/luminescent11/MTB-Detection/blob/main/MTB_Detection.ipynb)**
 ## What we added
 Our own idea.
 ## How it works
