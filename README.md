@@ -4,7 +4,7 @@
 **Team:** Rafa deGoma
 ## The problem
 Many under-resourced clinics in LMICs, making up 86% of the 10.6M TB patients, do not have the resources to conduct recommended, faster molecular TB diagnostics, instead using Ziehl-Neelsen (ZN) staining and counting mycobacterium tuberculosis (MTB) from microscope images by hand, which is error-prone. While counting can be assisted by computer vision, camera setup shifts in AI are known to hurt performance: a study showed that F1 score on mitosis detection dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021). I hypothesize that a similar pattern will apply to MTB detection in sputum smear images.
-## What we built - What goes in, what comes out, and how someone would use it.
+## What we built
 A microscope ZN smear image is fed into the fine-tuned model for inference, and the model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count. Clinicians use the MTB count from the model to expedite counting and diagnosis; formal diagnosis stays with human professionals.
 ## What we added
 Our own idea.
@@ -14,7 +14,7 @@ I used the Comprehensive Raw Dataset of Ziehl-Neelsen-Stained Sputum Smear Micro
 Model development used two separate experiments to quantify change in performance as a result of acquisition shift, specifically between the Hayear and Optilab camera systems in MTB micrscopy, by splitting the data splits based on camera. Experiment A trained and validated on both systems, and B trained and validated only on Hayear. The baseline was the median count for each model's training set. I fine-tuned a YOLO26n model and obtained the optimal confidence threshold from iterating over 86 choices. Nano size was chosen to prioritize efficiency, which translates to the computational budgets and cellular connection limits in low-resource settings. YOLO26 introduced the novel Small-Target-Aware Label Assignment (STAL) for improving small object detection, and MTB are very small in smear images.
 ## Results
 ### Metrics
-The baseline scored 5.15 overall MAE. Model A scored 1.66 overall MAE on held-out test data (68% decrease). Model B's MAE for Optilab was 28% lower than for Hayear, disproving the original hypothesis. This may have been because of YOLO augmentations simulating camera differences or leakage between images of the same slide. Overall recall for both models remains at 0.72, missing 28% of cells.
+The baseline scored 5.15 overall mean absolute error (MAE). Model A scored 1.66 overall MAE on held-out test data (68% decrease). Model B's MAE for Optilab was 28% lower than for Hayear, disproving the original hypothesis. This may have been because of YOLO augmentations simulating camera differences or leakage between images of the same slide. Overall recall for both models remains at 0.72, missing 28% of cells.
 
 | Test set | Model | Count MAE ↓ | vs. baseline | Precision | Recall | F1 | Misses (FN) | False alarms (FP) |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
