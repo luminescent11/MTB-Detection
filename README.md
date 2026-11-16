@@ -2,7 +2,7 @@
 **Track:** Health
 
 **Team:** Rafa deGoma
-## The problem - Who has this problem, and why does it matter? (2-3 sentences)
+## The problem
 - diagnosing TB in low-resource, high-burden settings is difficult
 - 1.13 mil died in 2025 from TB -> harms SDG 3, 3.5 years away
 - Only 54% of TB testing in 2024 was done with WHO-recommended rapid (molecular) tests such as the Xpert MTB/RIF test.
@@ -36,7 +36,7 @@ Model: I fine-tuned a YOLO26n model, using two separate experiments to conduct a
 - Data augmentation flipud=0.5
 
 - Iterated over confidence thresholds to get best MAE on val: 0.34 for A and 0.3 for B
-## Results - Our baseline scored X. Our model scored Y on held-out test data.
+## Results
 The baseline scored _ MAE. My model scored _ MAE on held-out test data.
 
 | Test set | Model | Count MAE ↓ | vs. baseline | Precision | Recall | F1 | Misses (FN) | False alarms (FP) |
@@ -66,7 +66,7 @@ error 5
 
 <img width="647" height="504" alt="image" src="https://github.com/user-attachments/assets/6322e8f9-2e0c-4e1a-aa02-e97f10d2d1e1" />
 
-## What we'd do next - One or two concrete next steps with more time.
+## What we'd do next
 - Make this ready for use in the form of a mobile app
 - Collect more data with more variety
 ## Sources
