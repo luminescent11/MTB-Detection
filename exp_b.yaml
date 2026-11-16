@@ -1,0 +1,6 @@
+train: /content/splits/train_hayear.txt
+val: /content/splits/val_hayear.txt
+test: /content/splits/test_hayear.txt
+nc: 1
+names:
+  0: MTB

@@ -1,0 +1,6 @@
+train: /content/splits/train_all.txt
+val: /content/splits/val_all.txt
+test: /content/splits/test_all.txt
+nc: 1
+names:
+  0: MTB
