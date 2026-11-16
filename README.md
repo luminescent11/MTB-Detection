@@ -5,7 +5,7 @@
 ## The problem
 TB sickened 10.7M people, mostly in low-middle-income countries, where many clinics do not have the resources to conduct recommended, faster molecular TB diagnostics, instead using Ziehl-Neelsen (ZN) staining and counting mycobacterium tuberculosis (MTB) from microscope images by eye, which is error-prone. While counting can be assisted by computer vision, camera setup shifts in AI are known to hurt performance: a study showed that F1 score on mitosis detection dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021). I hypothesize that a similar pattern will apply to MTB detection in sputum smear images.
 ## What we built
-A microscope ZN smear image is fed into the fine-tuned model for inference, and the model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count. Clinicians use the MTB count from the model to expedite counting and diagnosis; formal diagnosis stays with human professionals.
+A microscope ZN smear image is fed into the fine-tuned model for inference, and the model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count. Clinicians use the MTB count from the model to expedite counting and diagnosis; formal diagnosis stays with human professionals. **A notebook copy with all outputs loaded can be found [here](https://github.com/luminescent11/MTB-Detection/blob/main/MTB_Detection.ipynb)**
 ## What we added
 Our own idea.
 ## How it works
@@ -46,8 +46,7 @@ A and B differ in training size, not just camera. Small test sets: 63–67 image
 Make this ready for use in the form of a mobile app or collect data from new cameras, regions, and populations.
 
 ## Setup
-Make a folder in your Google Drive named "MTB Detection", download the ZIP file of the data from the [dataset website](https://data.mendeley.com/datasets/34gymtj5yc/9), and drag the ZIP into the Drive folder.
-Run the notebook sequentially (MTB_Detection.ipynb).
+**A notebook copy with all outputs loaded can be found [here](https://github.com/luminescent11/MTB-Detection/blob/main/MTB_Detection.ipynb)**. Make a folder in your Google Drive named "MTB Detection", download the ZIP file of the data from the [dataset website](https://data.mendeley.com/datasets/34gymtj5yc/9), and drag the ZIP into the Drive folder. Then add the two YAML files in this repo to that Drive folder. Run the notebook sequentially (MTB_Detection.ipynb), setting RUN_TRAINING and RUN_PREDICTIONS to True.
 
 ## Disclaimer
 This project is a prototype and is not medical advice.
