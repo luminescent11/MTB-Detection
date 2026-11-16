@@ -3,40 +3,18 @@
 
 **Team:** Rafa deGoma
 ## The problem
-- camera setup shifts in AI are known to hurt performance: a study showed that F1 score on mitosis detection dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021).
-- diagnosing TB in low-resource, high-burden settings is difficult
-- 1.13 mil died in 2025 from TB -> harms SDG 3, 3.5 years away
-- Only 54% of TB testing in 2024 was done with WHO-recommended rapid (molecular) tests such as the Xpert MTB/RIF test.
-- 2.2M undetected cases in 2025, over 20% of the total.
-- 86% of TB patients are in LMICs, 55% of global cases come from 5 countries (India, Indonesia, the Philippines, Pakistan, and Nigeria)
-- many under-resourced clinics in LMICs do not have the resources to conduct recommended, faster molecular tests, instead using Ziehl-Neelsen (ZN) staining and counting mycobacterium tuberculosis (MTB).
-- counting is done by hand, and in high-burden settings, is thus error-prone.
-- Hypothesis: The count error on model B for Optilab will be higher than for Hayear, as well as the count error on model A for Optilab, because of B hasn’t seen Optilab while training.
+Many under-resourced clinics in LMICs, making up 86% of the 10.6M TB patients, do not have the resources to conduct recommended, faster molecular TB diagnostics, instead using Ziehl-Neelsen (ZN) staining and counting mycobacterium tuberculosis (MTB) from microscope images by hand, which is error-prone. While counting can be assisted by computer vision, camera setup shifts in AI are known to hurt performance: a study showed that F1 score on mitosis detection dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021). I hypothesize that a similar pattern will apply to MTB detection in sputum smear images.
 ## What we built - What goes in, what comes out, and how someone would use it.
-- a microscope ZN smear image is fed into the fine-tuned model for inference
-- model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count
-- clinicians use the MTB count from the model to expedite counting and diagnosis; formal diagnosis stays with human professionals
-- the dual experiment approach used in the development of the model quantifies change in performance as a result of acquisition shift, specifically between the Hayear and Optilab camera systems in MTB micrscopy.
+A microscope ZN smear image is fed into the fine-tuned model for inference, and the model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count. Clinicians use the MTB count from the model to expedite counting and diagnosis; formal diagnosis stays with human professionals.
 ## What we added
 Our own idea.
 ## How it works
-Data: which dataset, how many examples, how we cleaned it.
-- Used the "Comprehensive Raw Dataset of Ziehl-Neelsen-Stained Sputum Smear Microscopy Images for Mycobacterium tuberculosis Detection" recently published alongside a paper
-- Contained microscope images of sputum smears using ZN staining and used two different camera systems roughly equally: Hayear and Optilab.
-- Original dataset contained 1438 images with 11447 examples in total, split by image into train / val / test at a roughly 80 / 10 / 10 split.
-- cleaned by removing 170 / 25 / 17 ambiguous images (several label files were paired with two different images)
-- also corrected a corrupted label that was 1 and should have been 0
-- total used: 979 / 117 / 130
-Experimental design: used two separate experiments to conduct an acquisition test by splitting the data splits based on camera. Experiment A trained and validated on both systems, and B trained and validated only on Hayear.
-Baseline: predicted a calculated constant that was the median count of cells in each image for the training dataset of each of the two experiments, which was 6 for both.
-Model: I fine-tuned a YOLO26n model
-- Nano size was chosen to prioritize efficiency, which translates to the computational budgets and cellular connection limits in low-resource settings.
-- YOLO26 introduced the novel Small-Target-Aware Label Assignment (STAL) for improving small object detection, and MTB are very small in smear images.
-- Data augmentation flipud=0.5 was applied to increase variety
-- Iterated over confidence thresholds to get best MAE on val: 0.34 for A and 0.3 for B
+I used the Comprehensive Raw Dataset of Ziehl-Neelsen-Stained Sputum Smear Microscopy Images for Mycobacterium tuberculosis Detection, which contained microscope images of sputum smears using ZN staining and used two different camera systems roughly equally: Hayear and Optilab. The original dataset contained 1438 images with 11447 examples in total, split by image into train / val / test at a roughly 80 / 10 / 10 split. I cleaned it by removing 170 / 25 / 17 ambiguous labels which were paired with two different images, also correcting a corrupted label. Total used: 979 / 117 / 130.
+
+Model development used two separate experiments to quantify change in performance as a result of acquisition shift, specifically between the Hayear and Optilab camera systems in MTB micrscopy, by splitting the data splits based on camera. Experiment A trained and validated on both systems, and B trained and validated only on Hayear. The baseline was the median count for each model's training set. I fine-tuned a YOLO26n model and obtained the optimal confidence threshold from iterating over 86 choices. Nano size was chosen to prioritize efficiency, which translates to the computational budgets and cellular connection limits in low-resource settings. YOLO26 introduced the novel Small-Target-Aware Label Assignment (STAL) for improving small object detection, and MTB are very small in smear images.
 ## Results
 ### Metrics
-The baseline scored 5.15 overall MAE. Model A scored 1.66 overall MAE on held-out test data (68% decrease). Model B's MAE for Optilab was 28% lower than for Hayear, disproving the original hypothesis.
+The baseline scored 5.15 overall MAE. Model A scored 1.66 overall MAE on held-out test data (68% decrease). Model B's MAE for Optilab was 28% lower than for Hayear, disproving the original hypothesis. This may have been because of YOLO augmentations simulating camera differences or leakage between images of the same slide. Overall recall for both models remains at 0.72, missing 28% of cells.
 
 | Test set | Model | Count MAE ↓ | vs. baseline | Precision | Recall | F1 | Misses (FN) | False alarms (FP) |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -50,7 +28,7 @@ The baseline scored 5.15 overall MAE. Model A scored 1.66 overall MAE on held-ou
 | Overall (n=130) | A (both cameras) | 1.66 | −68% | 0.78 | 0.72 | 0.75 | 307 | 217 |
 | Overall (n=130) | B (Hayear only) | 1.72 | −67% | 0.75 | 0.72 | 0.74 | 304 | 266 |
 
-### failure examples
+### Failure Examples
 These were the highest absolute error images from model B predicting on Optilab images; green is human ground truth, red is model prediction:
 Absolute error = 6
 
@@ -66,14 +44,10 @@ Absolute error = 5
 Very blurry images with lots of background color variation appear to also primarily result in false negatives, but also a few false positives.
 
 ### Limitations
-MTB vs. NTM: ZN staining marks all acid-fast bacilli, and MTB and NTM look the same, so detections are presumed MTB and need confirmation (culture or GeneXpert).
-The A vs. B confound: they differ in camera coverage and training size (979 vs. 494 images), so the comparison isn’t a pure camera effect. The split isn’t slide-level, so both cameras may share slides, which could hide a real camera shift.
-Small test sets: 63–67 images per camera, so small differences between A and B are within noise.
-Missed bacilli: recall is about 0.72, so roughly 1 in 4 bacilli is missed. That matters most for scanty smears, where a few bacilli decide the result.
+A and B differ in training size, not just camera. Small test sets: 63–67 images per camera, so metrics are noisy.
 
 ## What we'd do next
-- Make this ready for use in the form of a mobile app
-- Collect more data with more variety
+One thing I would do next is make this ready for use in the form of a mobile app. However, to improve the model, I would attempt to collect more data with more variety, including different camera systems, geographic origins, and patient populations.
 ## Sources
 [1]	H. Yuniarti, C. Fatichah, R. Sigit, S. Arifin, and E. da Costa, “A Comprehensive Raw Dataset of Ziehl-Neelsen-Stained Sputum Smear Microscopy Images for Mycobacterium tuberculosis Detection.” Version 9, Mendeley Data, May 23, 2026. doi: [10.17632/34GYMTJ5YC.9](https://doi.org/10.17632/34GYMTJ5YC.9). Licensed under CC BY 4.0.
 
