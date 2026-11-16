@@ -9,7 +9,7 @@ A microscope ZN smear image is fed into the fine-tuned model for inference, and 
 ## What we added
 Our own idea.
 ## How it works
-I used the Comprehensive Raw Dataset of Ziehl-Neelsen-Stained Sputum Smear Microscopy Images for Mycobacterium tuberculosis Detection, which contained microscope images of sputum smears using ZN staining and used two different camera systems roughly equally: Hayear and Optilab. The paper's YOLOv10s model had 3x the weights and primarily used mAP as the metric and is thus not comparable. The original dataset contained 1438 images with 11447 examples in total, split by image into train / val / test at a roughly 80 / 10 / 10 split. I cleaned it by excluding 170 / 25 / 17 ambiguous images shared labels with another image, also correcting a corrupted label. Total used: 979 / 117 / 130.
+I used the [ZN-stained sputum smear images dataset](https://data.mendeley.com/datasets/34gymtj5yc/9), which contained microscope images of sputum smears using ZN staining and used two different camera systems roughly equally: Hayear and Optilab. The paper's YOLOv10s model had 3x the weights and primarily used mAP as the metric and is thus not comparable. The original dataset contained 1438 images with 11447 examples in total, split by image into train / val / test at a roughly 80 / 10 / 10 split. I cleaned it by excluding 170 / 25 / 17 ambiguous images shared labels with another image, also correcting a corrupted label. Total used: 979 / 117 / 130.
 
 Model development used two separate experiments to quantify change in performance as a result of acquisition shift, specifically between these two cameras, by splitting the data splits based on camera. Experiment A trained and validated on both systems, and B trained and validated only on Hayear. The baseline was the median count for each model's training set. I fine-tuned a YOLO26n model and froze the confidence cutoff chosen on the validation set (A 0.34, B 0.30) before testing. Nano size was chosen for low-resource hardware. YOLO26 introduced the novel Small-Target-Aware Label Assignment (STAL) for improving small object detection, and MTB are very small in smear images.
 ## Results
@@ -30,14 +30,9 @@ The baseline scored 5.15 overall mean absolute error (MAE). Model A scored 1.66 
 
 ### Failure Examples - highest absolute error images from model B predicting on Optilab images:
 
-<img width="324" height="252" alt="image" src="https://github.com/user-attachments/assets/4ba24e69-abb5-468d-aa3d-397ad7a4b258" />
-
-Densely clustered MTB are merged into one prediction or result in false negatives.
-
-
-<img width="324" height="252" alt="image" src="https://github.com/user-attachments/assets/c616892a-42ae-4831-bfbf-fbf04640bc5c" />
-
-Very blurry images with lots of background color variation appear to also primarily result in false negatives, but also a few false positives.
+| Dense clusters get merged or missed | Blurry fields with uneven background are mostly missed |
+|:---:|:---:|
+| <img width="324" alt="failure 1" src="https://github.com/user-attachments/assets/4ba24e69-abb5-468d-aa3d-397ad7a4b258" /> | <img width="324" alt="failure 2" src="https://github.com/user-attachments/assets/c616892a-42ae-4831-bfbf-fbf04640bc5c" /> |
 
 ### Limitations
 A and B differ in training size, not just camera. Small test sets: 63–67 images per camera, so metrics are noisy. Detections are acid-fast bacilli assumed as MTB, so positives need confirmation.
