@@ -1,4 +1,4 @@
-# MTB detection in sputum smears with a camera shift test 
+# Camera Shift Effect in YOLO-Based Detection of Tuberculosis Bacteria in Sputum Microscopy
 **Track:** Health
 
 **Team:** Rafa deGoma
