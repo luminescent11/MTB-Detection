@@ -29,17 +29,14 @@ The baseline scored 5.15 overall mean absolute error (MAE). Model A scored 1.66 
 | Overall (n=130) | B (Hayear only) | 1.72 | −67% | 0.75 | 0.72 | 0.74 | 304 | 266 |
 
 ### Failure Examples
-These were the highest absolute error images from model B predicting on Optilab images; green is human ground truth, red is model prediction:
-Absolute error = 6
+These were the highest absolute error images from model B predicting on Optilab images:
 
-<img width="647" height="504" alt="image" src="https://github.com/user-attachments/assets/4ba24e69-abb5-468d-aa3d-397ad7a4b258" />
+<img width="324" height="252" alt="image" src="https://github.com/user-attachments/assets/4ba24e69-abb5-468d-aa3d-397ad7a4b258" />
 
 Densely clustered MTB are merged into one prediction or result in false negatives.
 
 
-Absolute error = 5
-
-<img width="647" height="504" alt="image" src="https://github.com/user-attachments/assets/c616892a-42ae-4831-bfbf-fbf04640bc5c" />
+<img width="324" height="252" alt="image" src="https://github.com/user-attachments/assets/c616892a-42ae-4831-bfbf-fbf04640bc5c" />
 
 Very blurry images with lots of background color variation appear to also primarily result in false negatives, but also a few false positives.
 
