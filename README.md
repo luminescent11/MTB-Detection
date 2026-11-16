@@ -3,6 +3,7 @@
 
 **Team:** Rafa deGoma
 ## The problem
+- camera setup shifts in AI are known to hurt performance: a study showed that F1 score on breast cancer classification dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021).
 - diagnosing TB in low-resource, high-burden settings is difficult
 - 1.13 mil died in 2025 from TB -> harms SDG 3, 3.5 years away
 - Only 54% of TB testing in 2024 was done with WHO-recommended rapid (molecular) tests such as the Xpert MTB/RIF test.
@@ -25,16 +26,12 @@ Data: which dataset, how many examples, how we cleaned it.
 - cleaned by removing 170 / 25 / 17 ambiguous images (several label files were paired with two different images)
 - also corrected a corrupted label that was 1 and should have been 0
 - total used: 979 / 117 / 130
-Baseline: predicted a calculated constant that was the median count of cells in each image for the training dataset of each of the two experiments:
-- experiment A's baseline prediction: 6
-- experiment B's baseline prediction: 6
-Model: I fine-tuned a YOLO26n model, using two separate experiments to conduct an acquisition test by splitting the data splits based on camera.
-- experiment A
-- experiment B
+Experimental design: used two separate experiments to conduct an acquisition test by splitting the data splits based on camera. Experiment A trained and validated on both systems, and B trained and validated only on Hayear.
+Baseline: predicted a calculated constant that was the median count of cells in each image for the training dataset of each of the two experiments, which was 6 for both.
+Model: I fine-tuned a YOLO26n model
 - Nano size was chosen to prioritize efficiency, which translates to the computational budgets and cellular connection limits in low-resource settings.
 - YOLO26 introduced the novel Small-Target-Aware Label Assignment (STAL) for improving small object detection, and MTB are very small in smear images.
-- Data augmentation flipud=0.5
-
+- Data augmentation flipud=0.5 was applied to increase variety
 - Iterated over confidence thresholds to get best MAE on val: 0.34 for A and 0.3 for B
 ## Results
 The baseline scored _ MAE. My model scored _ MAE on held-out test data.
