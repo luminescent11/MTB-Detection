@@ -28,8 +28,7 @@ The baseline scored 5.15 overall mean absolute error (MAE). Model A scored 1.66 
 | Overall (n=130) | A (both cameras) | 1.66 | −68% | 0.78 | 0.72 | 0.75 | 307 | 217 |
 | Overall (n=130) | B (Hayear only) | 1.72 | −67% | 0.75 | 0.72 | 0.74 | 304 | 266 |
 
-### Failure Examples
-These were the highest absolute error images from model B predicting on Optilab images:
+### Failure Examples - highest absolute error images from model B predicting on Optilab images:
 
 <img width="324" height="252" alt="image" src="https://github.com/user-attachments/assets/4ba24e69-abb5-468d-aa3d-397ad7a4b258" />
 
@@ -44,7 +43,7 @@ Very blurry images with lots of background color variation appear to also primar
 A and B differ in training size, not just camera. Small test sets: 63–67 images per camera, so metrics are noisy.
 
 ## What we'd do next
-One thing I would do next is make this ready for use in the form of a mobile app. However, to improve the model, I would attempt to collect more data with more variety, including different camera systems, geographic origins, and patient populations.
+One thing I would do next is make this ready for use in the form of a mobile app. However, to improve the model, I would attempt to collect more data with more variety, including different camera systems, geographic origins, and patient populations to make a more universally adoptable model.
 ## Sources
 [1]	H. Yuniarti, C. Fatichah, R. Sigit, S. Arifin, and E. da Costa, “A Comprehensive Raw Dataset of Ziehl-Neelsen-Stained Sputum Smear Microscopy Images for Mycobacterium tuberculosis Detection.” Version 9, Mendeley Data, May 23, 2026. doi: [10.17632/34GYMTJ5YC.9](https://doi.org/10.17632/34GYMTJ5YC.9). Licensed under CC BY 4.0.
 
