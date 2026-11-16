@@ -3,7 +3,7 @@
 
 **Team:** Rafa deGoma
 ## The problem
-- camera setup shifts in AI are known to hurt performance: a study showed that F1 score on breast cancer classification dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021).
+- camera setup shifts in AI are known to hurt performance: a study showed that F1 score on mitosis detection dropped from 0.683 to 0.325 when the testing dataset was on a different scanner than the one trained on (Aubreville et al. 2021).
 - diagnosing TB in low-resource, high-burden settings is difficult
 - 1.13 mil died in 2025 from TB -> harms SDG 3, 3.5 years away
 - Only 54% of TB testing in 2024 was done with WHO-recommended rapid (molecular) tests such as the Xpert MTB/RIF test.
@@ -11,11 +11,12 @@
 - 86% of TB patients are in LMICs, 55% of global cases come from 5 countries (India, Indonesia, the Philippines, Pakistan, and Nigeria)
 - many under-resourced clinics in LMICs do not have the resources to conduct recommended, faster molecular tests, instead using Ziehl-Neelsen (ZN) staining and counting mycobacterium tuberculosis (MTB).
 - counting is done by hand, and in high-burden settings, is thus error-prone.
+- Hypothesis: The count error on model B for Optilab will be higher than for Hayear, as well as the count error on model A for Optilab, because of B hasn’t seen Optilab while training.
 ## What we built - What goes in, what comes out, and how someone would use it.
 - a microscope ZN smear image is fed into the fine-tuned model for inference
 - model outputs bounding box predictions for MTB, which are counted to get the predicted MTB count
-- clinicians use the MTB count from the model to determine whether to diagnose a patient with TB
-- the dual experiment approach used in the development of the model quantifies change in performance as a result of acquisition shift between the Hayear and Optilab camera systems in MTB micrscopy.
+- clinicians use the MTB count from the model to expedite counting and diagnosis; formal diagnosis stays with human professionals
+- the dual experiment approach used in the development of the model quantifies change in performance as a result of acquisition shift, specifically between the Hayear and Optilab camera systems in MTB micrscopy.
 ## What we added
 Our own idea.
 ## How it works
@@ -34,7 +35,8 @@ Model: I fine-tuned a YOLO26n model
 - Data augmentation flipud=0.5 was applied to increase variety
 - Iterated over confidence thresholds to get best MAE on val: 0.34 for A and 0.3 for B
 ## Results
-The baseline scored _ MAE. My model scored _ MAE on held-out test data.
+### Metrics
+The baseline scored 5.15 overall MAE. Model A scored 1.66 overall MAE on held-out test data (68% decrease). Model B's MAE for Optilab was 28% lower than for Hayear, disproving the original hypothesis.
 
 | Test set | Model | Count MAE ↓ | vs. baseline | Precision | Recall | F1 | Misses (FN) | False alarms (FP) |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -48,20 +50,26 @@ The baseline scored _ MAE. My model scored _ MAE on held-out test data.
 | Overall (n=130) | A (both cameras) | 1.66 | −68% | 0.78 | 0.72 | 0.75 | 307 | 217 |
 | Overall (n=130) | B (Hayear only) | 1.72 | −67% | 0.75 | 0.72 | 0.74 | 304 | 266 |
 
-- failure examples
-error 6
+### failure examples
+These were the highest absolute error images from model B predicting on Optilab images; green is human ground truth, red is model prediction:
+Absolute error = 6
 
 <img width="647" height="504" alt="image" src="https://github.com/user-attachments/assets/4ba24e69-abb5-468d-aa3d-397ad7a4b258" />
 
+Densely clustered MTB are merged into one prediction or result in false negatives.
 
-error 5
+
+Absolute error = 5
 
 <img width="647" height="504" alt="image" src="https://github.com/user-attachments/assets/c616892a-42ae-4831-bfbf-fbf04640bc5c" />
 
+Very blurry images with lots of background color variation appear to also primarily result in false negatives, but also a few false positives.
 
-error 5
-
-<img width="647" height="504" alt="image" src="https://github.com/user-attachments/assets/6322e8f9-2e0c-4e1a-aa02-e97f10d2d1e1" />
+### Limitations
+MTB vs. NTM: ZN staining marks all acid-fast bacilli, and MTB and NTM look the same, so detections are presumed MTB and need confirmation (culture or GeneXpert).
+The A vs. B confound: they differ in camera coverage and training size (979 vs. 494 images), so the comparison isn’t a pure camera effect. The split isn’t slide-level, so both cameras may share slides, which could hide a real camera shift.
+Small test sets: 63–67 images per camera, so small differences between A and B are within noise.
+Missed bacilli: recall is about 0.72, so roughly 1 in 4 bacilli is missed. That matters most for scanty smears, where a few bacilli decide the result.
 
 ## What we'd do next
 - Make this ready for use in the form of a mobile app
